@@ -1,0 +1,20 @@
+[
+  {
+    "type": "component",
+    "code": "SC-118",
+    "name_ar": "مسمار فيليبس برأس دائري",
+    "name_en": "Screw Phillips Pan Head",
+    "description_ar": "مسمار فولاذي ستانلس ستيل M4x10mm لتثبيت أجزاء الليد.",
+    "description_en": "Stainless steel M4x10mm screw for LED fixture assembly.",
+    "image": "https://raw.githubusercontent.com/USER/REPO/main/extracted_items/SC-118.jpg"
+  },
+  {
+    "type": "fixture",
+    "code": "LED-PANEL-01",
+    "name_ar": "كشاف ليد براند إضاءة متطور",
+    "name_en": "Advanced LED Panel Light",
+    "description_ar": "كشاف ليد كامل يتكون من: جسم الكشاف، ليد دايود، كابلات توصيل، ومثبتات سكروب.",
+    "description_en": "Complete LED panel consisting of housing, LED diodes, wiring, and fasteners.",
+    "components": ["SC-118", "SC-119", "SC-12"]
+  }
+]
