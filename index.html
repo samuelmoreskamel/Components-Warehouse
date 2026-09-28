@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مخزن كشافات الإضاءة والمكونات</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; direction: rtl; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 12px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+        .result-card { border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; display: flex; gap: 15px; align-items: center; }
+        .result-card img { width: 100px; height: 100px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd; }
+        .info { flex: 1; }
+        .code { font-weight: bold; color: #007bff; }
+        .en { color: #666; font-size: 14px; direction: ltr; text-align: left; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>بحث مخزن الإضاءة والمكونات</h2>
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="اكتب الكود أو اسم المكون أو الكشاف (عربي أو إنجليزي)...">
+        <button onclick="searchData()">بحث</button>
+    </div>
+    <div id="results"></div>
+</div>
+
+<script>
+let inventory = [];
+
+// تحميل بيانات المخزن تلقائياً عند فتح الصفحة
+fetch('data.json')
+    .then(response => response.json())
+    .then(data => { inventory = data; })
+    .catch(error => console.error('خطأ في تحميل البيانات:', error));
+
+function searchData() {
+    const query = document.getElementById('searchInput').value.trim().toLowerCase();
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = '';
+
+    if (!query) {
+        resultsDiv.innerHTML = '<p style="text-align:center; color:red;">الرجاء كتابة كلمة البحث</p>';
+        return;
+    }
+
+    const matches = inventory.filter(item => 
+        item.code.toLowerCase().includes(query) ||
+        item.name_ar.toLowerCase().includes(query) ||
+        item.name_en.toLowerCase().includes(query) ||
+        item.description_ar.toLowerCase().includes(query)
+    );
+
+    if (matches.length === 0) {
+        resultsDiv.innerHTML = '<p style="text-align:center; color:#777;">لا توجد نتائج مطابقة</p>';
+        return;
+    }
+
+    matches.forEach(item => {
+        let card = document.createElement('div');
+        card.className = 'result-card';
+
+        if (item.type === 'component') {
+            card.innerHTML = `
+                <img src="${item.image}" alt="صورة المكون" onerror="this.src='https://via.placeholder.com/100?text=No+Image'">
+                <div class="info">
+                    <div class="code">الكود: ${item.code}</div>
+                    <h3>${item.name_ar}</h3>
+                    <div class="en">${item.name_en}</div>
+                    <p>${item.description_ar}</p>
+                </div>
+            `;
+        } else if (item.type === 'fixture') {
+            let componentsList = item.components.map(c => `<li>${c}</li>`).join('');
+            card.innerHTML = `
+                <div class="info" style="width:100%;">
+                    <div class="code">كشاف كامل - الكود: ${item.code}</div>
+                    <h3>${item.name_ar}</h3>
+                    <div class="en">${item.name_en}</div>
+                    <p>${item.description_ar}</p>
+                    <hr>
+                    <strong>المكونات الداخلية لهذا الكشاف:</strong>
+                    <ul>${componentsList}</ul>
+                </div>
+            `;
+        }
+        resultsDiv.appendChild(card);
+    });
+}
+</script>
+
+</body>
+</html>
